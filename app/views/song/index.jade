@@ -1,0 +1,12 @@
+- if (songs.length > 0)
+  h1 Listing Songs
+
+  #song-list
+    ul.songs
+      - for (var i in songs)
+        li
+          != link_to(songs[i].title, {"Song.show": {_id: songs[i]["_id"]}})
+- else
+  h1 No songs have been entered yet
+
+!= link_to("Create New Listing", {"Song.new": ""}, {class: "button"})

@@ -1,36 +1,6 @@
 controllers = {}
 
 
-// * * * * * Dump of controllers.ActorController * * * * *
-
-
-controllers.ActorController = {}
-
-
-// * * * * * Dump of controllers.ActorController.index * * * * *
-
-
-controllers.ActorController.index = function (args) {
-    $("#content").html(templates.actor.index(args))
-  }
-
-
-// * * * * * Dump of controllers.ActorController.show * * * * *
-
-
-controllers.ActorController.show = function (args) {
-    $("#content").html(templates.actor.show(args))
-  }
-
-
-// * * * * * Dump of controllers.ActorController.edit * * * * *
-
-
-controllers.ActorController.edit = function (args) {
-    $("#content").html(templates.actor.edit(args))
-  }
-
-
 // * * * * * Dump of controllers.AppController * * * * *
 
 
@@ -74,31 +44,47 @@ controllers.AppController.show_message = function (args) {
   }
 
 
-// * * * * * Dump of controllers.MovieController * * * * *
+// * * * * * Dump of controllers.AppController.tempfile * * * * *
 
 
-controllers.MovieController = {}
-
-
-// * * * * * Dump of controllers.MovieController.index * * * * *
-
-
-controllers.MovieController.index = function (args) {
-    $("#content").html(templates.movie.index(args))
+controllers.AppController.tempfile = function (args) {
+    file_uploads[args['req_id']].set_temp_id(args['id'])
   }
 
 
-// * * * * * Dump of controllers.MovieController.show * * * * *
+// * * * * * Dump of controllers.AppController.finished_upload * * * * *
 
 
-controllers.MovieController.show = function (args) {
-    $("#content").html(templates.movie.show(args))
+controllers.AppController.finished_upload = function (args) {
+    file_uploads[args['req_id']].oncomplete()
   }
 
 
-// * * * * * Dump of controllers.MovieController.edit * * * * *
+// * * * * * Dump of controllers.SongController * * * * *
 
 
-controllers.MovieController.edit = function (args) {
-    $("#content").html(templates.movie.edit(args))
+controllers.SongController = {}
+
+
+// * * * * * Dump of controllers.SongController.index * * * * *
+
+
+controllers.SongController.index = function (args) {
+    $("#content").html(templates.song.index(args))
+  }
+
+
+// * * * * * Dump of controllers.SongController.show * * * * *
+
+
+controllers.SongController.show = function (args) {
+    $("#content").html(templates.song.show(args))
+  }
+
+
+// * * * * * Dump of controllers.SongController.edit * * * * *
+
+
+controllers.SongController.edit = function (args) {
+    $("#content").html(templates.song.edit(args))
   }

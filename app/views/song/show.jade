@@ -1,0 +1,10 @@
+h1= song.title
+b Artist:
+= song.artist
+
+hr
+!= link_to("Back to song list", {'Song.index': ""})
+\ \| 
+!= link_to("Edit", {'Song.edit': {id: song._id}})
+\ \| 
+!= link_to("Delete", {"Song.delete": {id: song._id}})

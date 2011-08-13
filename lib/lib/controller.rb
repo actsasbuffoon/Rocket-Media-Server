@@ -22,15 +22,33 @@ class Rocket
       def actions
         @actions
       end
+      
+      def def_upload(name, type, &blk)
+        self.send(type, name, &blk)
+      end
+      
+      # Upload the file
+      # Provide the locations to the object in a special array (or hash?)
+      def file_first(name, &blk)
+        
+      end
+      
+      # Send the form
+      # Get a record ID back
+      # Attach ID to RocketUpload instance and transmit file
+      # Run a serverside callback on the record once complete
+      def form_first(name, &blk)
+        
+      end
     end
     
     module InstanceMethods
       def paramify(hsh)
-        puts "Attempting to paramify #{hsh.class}: #{hsh.inspect}"
+        #puts "Attempting to paramify #{hsh.class}: #{hsh.inspect}"
         return {} if hsh == ""
         t = {}
         hsh.each_pair do |k, v|
-          puts "Working on #{k}: #{v.inspect}"
+          #puts "Working on #{k}: #{v.inspect}"
           chunks = k.split("[").map {|s| s.sub /\]$/, ""}
           if chunks.length > 1
             iter = t
@@ -62,6 +80,7 @@ class Rocket
         if actions.include?(command)
           @current_user = user
           @params = paramify(args)
+          puts "-> #{self.class}.#{command}"
           self.instance_exec &actions[command.to_sym]
         else
           raise "Class #{self.class} does not have an action named #{command}"

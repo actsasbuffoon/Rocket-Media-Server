@@ -22,4 +22,12 @@ AppController = function() {
       time: 8000
     })
   }
+  
+  this.tempfile = function(args) {
+    file_uploads[args['req_id']].set_temp_id(args['id'])
+  }
+  
+  this.finished_upload = function(args) {
+    file_uploads[args['req_id']].oncomplete()
+  }
 }

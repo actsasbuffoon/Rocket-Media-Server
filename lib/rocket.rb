@@ -1,5 +1,6 @@
 APP_ROOT = File.join *File.dirname(File.expand_path __FILE__).split("/").slice(0..-2)
 
+require 'base64'
 require 'rubygems'
 require 'mongoid'
 #require 'em-synchrony'
@@ -17,7 +18,7 @@ require 'nokogiri'
 require 'active_support'
 require 'active_support/core_ext/string'
 
-APP_NAME = "movie_app"
+APP_NAME = "mediaserver"
 
 require File.join(APP_ROOT, "lib", "lib", 'monkey_patches.rb')
 require File.join(APP_ROOT, "lib", "lib", 'bolt.rb')

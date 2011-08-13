@@ -1,0 +1,10 @@
+h1= title
+#form_errors
+form(action=action, method='POST')
+
+  != hidden_input("song._id", song._id)
+  != text_input("song.title", song.title)
+  != text_input("song.artist", song.artist)
+  != simple_upload('song.file', song.file)
+  
+  input(type='submit')

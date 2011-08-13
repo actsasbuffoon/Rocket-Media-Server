@@ -1,41 +1,22 @@
 html, body {
   height: 100%;
-  background: #555;
   padding: 0px;
   margin: 0px;
 }
 
 #wrapper {
   width: 960px;
-  margin: 20px auto;
-  -webkit-box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.5);
-  border-radius: 3px;
-}
-
-#navigation {
-  width: 100px;
-  display: table-cell;
-  border-right: 1px solid #ddf;
-  background: #eef;
-}
-
-#navigation ul {
-  list-style: none;
-  padding: 0px 5px;
-  margin: 0px;
-}
-
-#content {
-  width: 860px;
-  display: table-cell;
-  padding: 5px;
+  margin: 0px auto;
   background: white;
 }
 
-#header {
-  background: #77f;
+#content {
+  width: 960px;
   padding: 5px;
-  border-radius: 3px 3px 0px 0px;
+}
+
+#header {
+  padding: 5px;
   color: #33f;
 }
 
@@ -44,19 +25,11 @@ html, body {
 }
 
 #footer {
-  background: #77f;
   padding: 5px;
-  border-radius: 0px 0px 3px 3px;
   color: #33f;
 }
 
-.table {
-  display: table;
-  min-height: 500px;
-}
-
 #main {
-  display: table-row;
   background: white;
 }
 
@@ -80,9 +53,8 @@ a.button {
   background: -webkit-linear-gradient(top, #EEE, #AAA);
   border-radius: 3px;
   text-decoration: none;
-  display: block;
+  display: inline-block;
   padding: 4px 12px;
-  float: left;
 }
 
 a.button:hover {
