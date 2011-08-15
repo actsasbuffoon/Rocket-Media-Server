@@ -31,6 +31,8 @@ class SongController
   
   # file_first
   define_action :create do
+    loc = File.join(APP_ROOT, "public", "media")
+    Dir.mkdir(loc) unless File.exist?(loc)
     file = params["song"].delete "file"
     song = Song.new(params["song"])
     FileUtils.mv(File.join(APP_ROOT, "tmp", file), File.join(APP_ROOT, "public", "media", "#{song._id}.mp3"))
