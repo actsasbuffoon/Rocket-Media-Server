@@ -56,7 +56,7 @@ controllers.AppController.tempfile = function (args) {
 
 
 controllers.AppController.finished_upload = function (args) {
-    file_uploads[args['req_id']].oncomplete()
+    file_uploads[args['req_id']].oncomplete(args)
   }
 
 

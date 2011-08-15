@@ -407,7 +407,7 @@ templates.song = {}
 
 
 templates.song.edit = function anonymous(locals) {
-var __ = { lineno: 1, input: "h1= title\n#form_errors\nform(action=action, method='POST')\n\n  != hidden_input(\"song._id\", song._id)\n  != text_input(\"song.title\", song.title)\n  != text_input(\"song.artist\", song.artist)\n  != simple_upload('song.file', song.file)\n  \n  input(type='submit')", filename: undefined };
+var __ = { lineno: 1, input: "h1= title\n#form_errors\nform(action=action, method='POST')\n\n  != hidden_input(\"song._id\", song._id)\n  != text_input(\"song.title\", song.title)\n  != text_input(\"song.artist\", song.artist)\n  != file_first_upload('song.file', song.file, {action: \"Song.upload_song\", class: \"my_uploader\"})\n  \n  input(type='submit')", filename: undefined };
 function rethrow(err, str, filename, lineno){
   var context = 3
     , lines = str.split('\n')
@@ -493,7 +493,7 @@ __.lineno = 7;
 var __val__ = text_input("song.artist", song.artist)
 buf.push(null == __val__ ? "" : __val__);
 __.lineno = 8;
-var __val__ = simple_upload('song.file', song.file)
+var __val__ = file_first_upload('song.file', song.file, {action: "Song.upload_song", class: "my_uploader"})
 buf.push(null == __val__ ? "" : __val__);
 __.lineno = 10;
 buf.push('<input');
@@ -625,7 +625,7 @@ buf.push(null == __val__ ? "" : __val__);}return buf.join("");
 
 
 templates.song.show = function anonymous(locals) {
-var __ = { lineno: 1, input: "h1= song.title\nb Artist:\n= song.artist\n\nhr\n!= link_to(\"Back to song list\", {'Song.index': \"\"})\n\\ \\| \n!= link_to(\"Edit\", {'Song.edit': {id: song._id}})\n\\ \\| \n!= link_to(\"Delete\", {\"Song.delete\": {id: song._id}})", filename: undefined };
+var __ = { lineno: 1, input: "h1= song.title\nb Artist:\n= song.artist\nbr\nobject(type='audio/mpeg')\n  param(name='src', value=file)\n  embed(src=file, type='audio/mpeg')\n\nhr\n!= link_to(\"Back to song list\", {'Song.index': \"\"})\n\\ \\| \n!= link_to(\"Edit\", {'Song.edit': {id: song._id}})\n\\ \\| \n!= link_to(\"Delete\", {\"Song.delete\": {id: song._id}})", filename: undefined };
 function rethrow(err, str, filename, lineno){
   var context = 3
     , lines = str.split('\n')
@@ -698,23 +698,45 @@ buf.push('</b>');
 __.lineno = 3;
 var __val__ = song.artist
 buf.push(escape(null == __val__ ? "" : __val__));
-__.lineno = 6;
-buf.push('<hr');
+__.lineno = 5;
+buf.push('<br');
 buf.push(attrs({  }));
 buf.push('/>');
 __.lineno = 6;
+buf.push('<object');
+buf.push(attrs({ 'type':('audio/mpeg') }));
+buf.push('>');
+__.lineno = undefined;
+__.lineno = 7;
+buf.push('<param');
+buf.push(attrs({ 'name':('src'), 'value':(file) }));
+buf.push('>');
+__.lineno = undefined;
+buf.push('</param>');
+__.lineno = 8;
+buf.push('<embed');
+buf.push(attrs({ 'src':(file), 'type':('audio/mpeg') }));
+buf.push('>');
+__.lineno = undefined;
+buf.push('</embed>');
+buf.push('</object>');
+__.lineno = 10;
+buf.push('<hr');
+buf.push(attrs({  }));
+buf.push('/>');
+__.lineno = 10;
 var __val__ = link_to("Back to song list", {'Song.index': ""})
 buf.push(null == __val__ ? "" : __val__);
-__.lineno = 7;
+__.lineno = 11;
 buf.push('\ \| ');
 buf.push('\n');
-__.lineno = 8;
+__.lineno = 12;
 var __val__ = link_to("Edit", {'Song.edit': {id: song._id}})
 buf.push(null == __val__ ? "" : __val__);
-__.lineno = 9;
+__.lineno = 13;
 buf.push('\ \| ');
 buf.push('\n');
-__.lineno = 10;
+__.lineno = 14;
 var __val__ = link_to("Delete", {"Song.delete": {id: song._id}})
 buf.push(null == __val__ ? "" : __val__);}return buf.join("");
 } catch (err) {

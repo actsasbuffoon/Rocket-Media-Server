@@ -2,6 +2,19 @@ var jade = require('jade')
 var socket = false
 var first_connect = false
 
+$(".my_uploader").live("uploaded_chunk", function(e) {
+  el = $(e.target)
+  uploader = eval(el.attr("data-rocket-upload"))
+  console.log("From progressbar callback")
+  console.log(uploader)
+  if (el.next(".progressbar").length == 0) {
+    el.after("<div class='progressbar'></div>")
+  }
+  el.next(".progressbar").progressbar({
+    value: (uploader.start / uploader.file.fileSize) * 100
+  })
+})
+
 rocket = function(msg) {
   if (socket && socket.readyState == 1) {
     console.log("Sending message to server:")

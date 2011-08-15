@@ -23,14 +23,22 @@ class Rocket
         @actions
       end
       
-      def def_upload(name, type, &blk)
-        self.send(type, name, &blk)
-      end
-      
       # Upload the file
       # Provide the locations to the object in a special array (or hash?)
       def file_first(name, &blk)
         
+        define_action "#{name}_request_tempfile".to_sym do
+          id = "#{self.class.to_s}_#{name}_#{Time.now.to_i.to_s}_#{rand(9999999).to_s}"
+          File.open(File.join(APP_ROOT, "tmp", id), "w") {|f| f.write ""}
+          current_user.transmit("App.tempfile" => {id: id, req_id: params["req_id"]})
+        end
+        
+        define_action "#{name}_receive_file".to_sym do
+          File.open(File.join(APP_ROOT, "tmp", params["id"]), "ab") {|f| f.write Base64.decode64(params["chunk"])}
+          if params["complete"]
+            current_user.transmit({"App.finished_upload" => {id: params["id"], req_id: params["req_id"]}})
+          end
+        end
       end
       
       # Send the form

@@ -1,6 +1,10 @@
 h1= song.title
 b Artist:
 = song.artist
+br
+object(type='audio/mpeg')
+  param(name='src', value=file)
+  embed(src=file, type='audio/mpeg')
 
 hr
 != link_to("Back to song list", {'Song.index': ""})

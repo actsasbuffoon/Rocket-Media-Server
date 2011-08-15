@@ -1,3 +1,16 @@
+// Determine if we need to use a vendor specific slice method for chunking files.
+if (window.Blob != undefined) {
+  if (Blob.prototype.slice != undefined) {
+    var file_api_slice_method = "slice"
+  }
+  else if (Blob.prototype.webkitSlice != undefined) {
+    var file_api_slice_method = "webkitSlice"
+  }
+  else if (Blob.prototype.mozSlice != undefined) {
+    var file_api_slice_method = "mozSlice"
+  }
+}
+
 var link_to = function(text, args, attrs) {
   attrs = attrs || {}
   if (attrs.tag_type) {
@@ -15,139 +28,6 @@ var link_to = function(text, args, attrs) {
   }
   str = "<" + tag_type + " " + t.join(" ") + ">" + text + "</" + tag_type + ">"
   return str
-}
-
-var Base64 = {
-  // private property
-  _keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-
-  // public method for encoding
-  encode : function (input) {
-      var output = "";
-      var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-      var i = 0;
-
-      input = Base64._utf8_encode(input);
-
-      while (i < input.length) {
-
-          chr1 = input.charCodeAt(i++);
-          chr2 = input.charCodeAt(i++);
-          chr3 = input.charCodeAt(i++);
-
-          enc1 = chr1 >> 2;
-          enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-          enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-          enc4 = chr3 & 63;
-
-          if (isNaN(chr2)) {
-              enc3 = enc4 = 64;
-          } else if (isNaN(chr3)) {
-              enc4 = 64;
-          }
-
-          output = output +
-          Base64._keyStr.charAt(enc1) + Base64._keyStr.charAt(enc2) +
-          Base64._keyStr.charAt(enc3) + Base64._keyStr.charAt(enc4);
-
-      }
-
-      return output;
-  },
-
-  // public method for decoding
-  decode : function (input) {
-      var output = "";
-      var chr1, chr2, chr3;
-      var enc1, enc2, enc3, enc4;
-      var i = 0;
-
-      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-
-      while (i < input.length) {
-
-          enc1 = Base64._keyStr.indexOf(input.charAt(i++));
-          enc2 = Base64._keyStr.indexOf(input.charAt(i++));
-          enc3 = Base64._keyStr.indexOf(input.charAt(i++));
-          enc4 = Base64._keyStr.indexOf(input.charAt(i++));
-
-          chr1 = (enc1 << 2) | (enc2 >> 4);
-          chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-          chr3 = ((enc3 & 3) << 6) | enc4;
-
-          output = output + String.fromCharCode(chr1);
-
-          if (enc3 != 64) {
-              output = output + String.fromCharCode(chr2);
-          }
-          if (enc4 != 64) {
-              output = output + String.fromCharCode(chr3);
-          }
-
-      }
-
-      output = Base64._utf8_decode(output);
-
-      return output;
-
-  },
-
-  // private method for UTF-8 encoding
-  _utf8_encode : function (string) {
-      string = string.replace(/\r\n/g,"\n");
-      var utftext = "";
-
-      for (var n = 0; n < string.length; n++) {
-
-          var c = string.charCodeAt(n);
-
-          if (c < 128) {
-              utftext += String.fromCharCode(c);
-          }
-          else if((c > 127) && (c < 2048)) {
-              utftext += String.fromCharCode((c >> 6) | 192);
-              utftext += String.fromCharCode((c & 63) | 128);
-          }
-          else {
-              utftext += String.fromCharCode((c >> 12) | 224);
-              utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-              utftext += String.fromCharCode((c & 63) | 128);
-          }
-
-      }
-
-      return utftext;
-  },
-
-  // private method for UTF-8 decoding
-  _utf8_decode : function (utftext) {
-      var string = "";
-      var i = 0;
-      var c = c1 = c2 = 0;
-
-      while ( i < utftext.length ) {
-
-          c = utftext.charCodeAt(i);
-
-          if (c < 128) {
-              string += String.fromCharCode(c);
-              i++;
-          }
-          else if((c > 191) && (c < 224)) {
-              c2 = utftext.charCodeAt(i+1);
-              string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-              i += 2;
-          }
-          else {
-              c2 = utftext.charCodeAt(i+1);
-              c3 = utftext.charCodeAt(i+2);
-              string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-              i += 3;
-          }
-
-      }
-      return string;
-  }
 }
 
 var size_estimator = function(bytes) {
@@ -175,92 +55,84 @@ var size_estimator = function(bytes) {
 
 var file_uploads = []
 
-//var RocketUploader = function(file, type) {
-//  
-//  if (type == undefined) {
-//    this.type = "simple"
-//  }
-//  else {
-//    this.type = type
-//  }
-//  
-//  this.file_chunk_size = 1024 * 100
-//  
-//  var upload_files = function(file_info) {
-//    $(files).each(function(i, e) {
-//      this.file = file
-//      if (this.type == "simple") {
-//        this.simple_readfile()
-//      }
-//      else if (this.type == "form_first") {
-//        //this.req_id = Math.random() * 9999999
-//        //file_uploads[this.req_id] = this
-//        //rocket({"App.request_tempfile": {req_id: this.req_id}})
-//      }
-//      else if (this.type == "file_first") {
-//        
-//      }
-//    })
-//  }
-//  
-//  this.set_temp_id = function(t_id) {
-//    this.temp_id = t_id
-//    this.readfile()
-//  }
-//  
-//  this.chunk_callback = function(e) {
-//    if (this.start + this.file_chunk_size < this.file.fileSize) {
-//      console.log("Run the method again")
-//      rocket({"App.receive_file": {chunk: btoa(e.target.result), complete: false, index: this.start + this.file_chunk_size, id: this.temp_id, req_id: this.req_id}})
-//      this.readfile(this.start + this.file_chunk_size)
-//    }
-//    else {
-//      rocket({"App.receive_file": {chunk: Base64.encode(e.target.result), complete: true, index: this.file.fileSize, id: this.temp_id, req_id: this.req_id}})
-//      console.log("Stop the method.")
-//    }
-//  }
-//  
-//  this.oncomplete = function() {}
-//  
-//  this.readfile = function(start) {
-//    
-//    //document.getElementById('filename').innerHTML = document.getElementById('fileupload').files[0].fileName
-//    //document.getElementById('filesize').innerHTML = size_estimator(document.getElementById('fileupload').files[0].fileSize)
-//    
-//    r = new FileReader()
-//    
-//    r.file_uploader = this
-//    
-//    r.onload = function(e) {
-//      this.file_uploader.chunk_callback(e)
-//    }
-//    
-//    r.onerror = function(e) {
-//      console.log("ERROR")
-//      console.log(e)
-//    }
-//    
-//    if (start == undefined) {
-//      this.start = 0
-//    }
-//    else {
-//      this.start = start
-//    }
-//    if (this.start + this.file_chunk_size > this.file.fileSize) {
-//      r.readAsBinaryString(this.file.webkitSlice(this.start, this.file.fileSize))
-//      console.log("" + this.start + "/" + this.file.fileSize + " FINSIHED!")
-//    }
-//    else {
-//      console.log("more file remaining")
-//      r.readAsBinaryString(this.file.webkitSlice(this.start, this.start + this.file_chunk_size))
-//      console.log("" + this.start + "/" + (this.start + this.file_chunk_size) + " PROGRESS")
-//    }
-//  }
-//}
-
 var RocketUploader = function(elem, form) {
   
-  var RocketUpload = function(uploader, file, type, action, real_input) {
+  var RocketFileFirstUpload = function(uploader, file, real_input, action) {
+    this.file_chunk_size = 1024 * 100
+    this.uploader = uploader
+    this.file = file
+    this.action = action
+    this.real_input = real_input
+    this.form = this.uploader.form
+    this.history = []
+
+    this.set_temp_id = function(t_id) {
+      this.temp_id = t_id
+      this.upload_chunk()
+    }
+    
+    this.file_first = function(start) {
+      this.req_id = Math.random()
+      file_uploads[this.req_id] = this
+      this.form.wait_for(this.req_id)
+      v = {}
+      v[this.action + "_request_tempfile"] = {req_id: this.req_id}
+      rocket(v)
+      this.uploader.elem.attr("data-rocket-upload", "file_uploads["+this.req_id+"]")
+      
+      this.oncomplete = function() {
+        this.real_input.val(this.temp_id)
+        this.form.finished_with(this.req_id)
+      }
+      
+      this.upload_chunk = function(start) {
+        r = new FileReader()
+        r.rocket_upload = this
+        
+        r.onload = function(e) {
+          d = new Date()
+          t = d.getTime() + (d.getMilliseconds() / 1000.0)
+          r.rocket_upload.history.push({time: t, size: r.rocket_upload.file_chunk_size})
+          this.rocket_upload.uploader.elem.trigger("uploaded_chunk")
+          
+          if (r.rocket_upload.start + r.rocket_upload.file_chunk_size < r.rocket_upload.file.fileSize) {
+            v = {}
+            v[r.rocket_upload.action + "_receive_file"] = {chunk: btoa(e.target.result), complete: false, index: r.rocket_upload.start + r.rocket_upload.file_chunk_size, id: r.rocket_upload.temp_id, req_id: r.rocket_upload.req_id}
+            rocket(v)
+            r.rocket_upload.upload_chunk(r.rocket_upload.start + r.rocket_upload.file_chunk_size)
+          }
+          else {
+            v = {}
+            v[r.rocket_upload.action + "_receive_file"] = {chunk: btoa(e.target.result), complete: true, index: r.rocket_upload.file_chunk_size, id: r.rocket_upload.temp_id, req_id: r.rocket_upload.req_id}
+            rocket(v)
+          }
+        }
+        r.onerror = function(e) {
+          console.log(e)
+        }
+        
+        if (start == undefined) {
+          this.start = 0
+        }
+        else {
+          this.start = start
+        }
+        // Is this the last chunk of the file or not?
+        if (this.start + this.file_chunk_size < this.file.fileSize) {
+          f = this.file[file_api_slice_method](this.start, this.start + this.file_chunk_size)
+          r.readAsBinaryString(f)
+        }
+        else {
+          f = this.file[file_api_slice_method](this.start, this.file.fileSize)
+          r.readAsBinaryString(f)
+        }
+      }
+    }
+    
+    this.file_first()
+  }
+  
+  var RocketSimpleUpload = function(uploader, file, real_input) {
     
     this.simple_read = function() {
       this.id = Math.random()
@@ -280,23 +152,23 @@ var RocketUploader = function(elem, form) {
     this.uploader = uploader
     this.form = this.uploader.form
     this.file = file
-    this.type = type
     this.real_input = real_input
-    this.action = action
-    if (this.type == "simple") {
-      this.simple_read()
-    }
+    this.simple_read()
   }
   
   this.form = form
+  this.elem = elem
   type = $(elem).children(".upload_type").val()
   action = $(elem).children(".upload_action").val()
   real_input = $(elem).children(".rocket_real_file_input")
   file_input = $(elem).children("input[type='file']")[0]
-  console.log("Files:")
   for (i = 0; i < file_input.files.length; i++) {
-    console.log(file_input.files[i])
-    new RocketUpload(this, file_input.files[i], type, action, real_input)
+    if (type == "simple") {
+      new RocketSimpleUpload(this, file_input.files[i], real_input)
+    }
+    else if (type == "file_first") {
+      new RocketFileFirstUpload(this, file_input.files[i], real_input, action)
+    }
   }
 }
 
@@ -316,7 +188,7 @@ var RocketForm = function(evnt) {
     this.waiting.push(key)
   }
   
-  this.finished_with = function(key) {
+  this.finished_with = function(key, ret) {
     console.log("No longer waiting for " + key)
     console.log(key)
     for (i = 0; i < this.waiting.length; i++) {
@@ -325,11 +197,15 @@ var RocketForm = function(evnt) {
         this.waiting.splice(key, 1)
       }
     }
-    this.check_submission()
+    this.check_submission(ret)
   }
   
-  this.check_submission = function() {
+  this.check_submission = function(args) {
     console.log("Checking submission")
+    if (args != undefined) {
+      console.log("Received args:")
+      console.log(args)
+    }
     if (this.waiting.length == 0) {
       console.log("Ready!")
       this.submit()
@@ -351,6 +227,9 @@ var RocketForm = function(evnt) {
         if (el.parent().children(".upload_type").val() == "simple") {
           frm.vals[el.parent().children(".rocket_real_file_input").attr("name")] = el.parent().children(".rocket_real_file_input").val()
         }
+        else if (el.parent().children(".upload_type").val() == "file_first") {
+          frm.vals[el.parent().children(".rocket_real_file_input").attr("name")] = el.parent().children(".rocket_real_file_input").val()
+        }
       }
       else if (el.parent().hasClass("rocket_file_upload")) {
         // Do nothing
@@ -367,7 +246,9 @@ var RocketForm = function(evnt) {
       }
     })
     console.log(this.vals)
-    //rocket(obj)
+    obj = {}
+    obj[this.frm.attr("action")] = this.vals
+    rocket(obj)
   }
   
   this.elem = $(evnt.target)

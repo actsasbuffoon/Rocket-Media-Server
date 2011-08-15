@@ -47,7 +47,7 @@ var file_first_upload = function(vr, vl, args) {
   label_text = parts[parts.length - 1]
   name = parts[0] + "[" + parts.slice(1, parts.length).join("][") + "]"
   id = vr.replace(/\./m, "_").replace(/__+/m, "_")
-  return "<div class='field'><label for='"+id+"'>" + label_text + "</label><span class='rocket_file_upload'><input type='hidden' class='upload_type' value='file_first' /><input type='hidden' class='upload_action' value='"+args['action']+"' /><input type='file' name='"+name+"' id='"+id+"' /></span></div>"
+  return "<div class='field'><label for='"+id+"'>" + label_text + "</label><span class='rocket_file_upload "+args["class"]+"'><input type='hidden' class='upload_type' value='file_first' /><input type='hidden' class='upload_action' value='"+args['action']+"' /><input type='hidden' name='"+name+"' id='"+id+"' class='rocket_real_file_input' /><input type='file' name='"+name+"' id='"+id+"' /></span></div>"
 }
 
 var form_first_upload = function(vr, vl, args) {
@@ -56,5 +56,5 @@ var form_first_upload = function(vr, vl, args) {
   label_text = parts[parts.length - 1]
   name = parts[0] + "[" + parts.slice(1, parts.length).join("][") + "]"
   id = vr.replace(/\./m, "_").replace(/__+/m, "_")
-  return "<div class='field'><label for='"+id+"'>" + label_text + "</label><span class='rocket_file_upload'><input type='hidden' class='upload_type' value='form_first' /><input type='hidden' class='upload_action' value='"+args['action']+"' /><input type='file' name='"+name+"' id='"+id+"' /></span></div>"
+  return "<div class='field'><label for='"+id+"'>" + label_text + "</label><span class='rocket_file_upload "+ args["class"] +"'><input type='hidden' class='upload_type' value='form_first' /><input type='hidden' class='upload_action' value='"+args['action']+"' /><input type='file' name='"+name+"' id='"+id+"' /></span></div>"
 }

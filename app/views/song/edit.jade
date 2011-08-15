@@ -5,6 +5,6 @@ form(action=action, method='POST')
   != hidden_input("song._id", song._id)
   != text_input("song.title", song.title)
   != text_input("song.artist", song.artist)
-  != simple_upload('song.file', song.file)
+  != file_first_upload('song.file', song.file, {action: "Song.upload_song", class: "my_uploader"})
   
   input(type='submit')
