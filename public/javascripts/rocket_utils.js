@@ -93,7 +93,13 @@ var RocketUploader = function(elem, form) {
           d = new Date()
           t = d.getTime() + (d.getMilliseconds() / 1000.0)
           r.rocket_upload.history.push({time: t, size: r.rocket_upload.file_chunk_size})
+          if (r.rocket_upload.history.length > 30) {r.rocket_upload.history.shift()}
           this.rocket_upload.uploader.elem.trigger("uploaded_chunk")
+          
+          //n_chunk_size = 0
+          
+          //if (n_chunk_size < 5 * 1024) {n_chunk_size = 5 * 1024}
+          //if (n_chunk_size > 500 * 1024) {n_chunk_size = 500 * 1024}
           
           if (r.rocket_upload.start + r.rocket_upload.file_chunk_size < r.rocket_upload.file.fileSize) {
             v = {}
@@ -106,6 +112,8 @@ var RocketUploader = function(elem, form) {
             v[r.rocket_upload.action + "_receive_file"] = {chunk: btoa(e.target.result), complete: true, index: r.rocket_upload.file_chunk_size, id: r.rocket_upload.temp_id, req_id: r.rocket_upload.req_id}
             rocket(v)
           }
+          
+          
         }
         r.onerror = function(e) {
           console.log(e)

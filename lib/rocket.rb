@@ -16,10 +16,8 @@ require 'em-websocket'
 require 'json'
 require 'v8'
 require 'nokogiri'
-require 'active_support'
-require 'active_support/core_ext/string'
 
-APP_NAME = "mediaserver"
+require File.join(APP_ROOT, "config", "config.rb")
 
 require File.join(APP_ROOT, "lib", "lib", 'monkey_patches.rb')
 require File.join(APP_ROOT, "lib", "lib", 'bolt.rb')
